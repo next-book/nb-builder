@@ -4,9 +4,10 @@ Next Book building tool
 
 ## Use
 
-```sh
+```bash
 git clone https://github.com/next-book/nb-builder.git .
 yarn install
 npm link
-nb-build --src=<book_source_dir> --out=<build_dir=./out>
+nb-build --src ./src --out ./out --owner "John Doe" --hash "abcdefgh"
 ```
+(Above values are defaults, any params may be omitted.)

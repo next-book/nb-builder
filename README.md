@@ -1,6 +1,6 @@
 # nb-builder
 
-Next Book building tool
+Next Book building tool.
 
 ## Use
 
@@ -10,4 +10,7 @@ yarn install
 npm link
 nb-build --src ./src --out ./out --owner "John Doe" --hash "abcdefgh"
 ```
-(Above values are defaults, any params may be omitted.)
+
+
+- Above values are defaults, any params may be omitted.
+- `--src` directory needs to be a git repo.

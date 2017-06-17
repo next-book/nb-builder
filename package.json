@@ -24,11 +24,24 @@
     "citation-js": "^0.3.0-5",
     "command-line-args": "^4.0.4",
     "dot": "^1.1.1",
+    "front-matter": "^2.1.2",
     "js-yaml": "^3.8.4",
+    "jsdom": "^10.1.0",
     "markdown-it": "^8.3.1",
     "markdown-it-footnote": "^3.0.1",
     "mocha": "^3.4.1",
+    "ncp": "^2.0.0",
     "node-sass": "^4.5.2",
     "rimraf": "^2.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-config-google": "^0.8.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-node": "^5.0.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
   }
 }

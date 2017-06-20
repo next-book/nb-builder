@@ -5,8 +5,8 @@ const dot = require('dot');
 
 const persistence = require('./lib/persistence');
 const revision = require('./lib/revision');
-const bib = require('./lib/bib');
 const content = require('./lib/content');
+const navigation = require('./lib/navigation');
 const style = require('./lib/style');
 const scripts = require('./lib/scripts');
 
@@ -25,13 +25,13 @@ const build = (args) => {
   persistence.copyFolder(dirs.src.assets)('assets');
 
   // load bibliography
-  const bibItems = bib.load(dirs.src.bibliography, dirs.out.root);
-  persistence.saveBibliography(bib.buildHtml(bibItems), bib.buildJson(bibItems));
+  const bibItems = navigation.load(dirs.src.bibliography, dirs.out.root);
+  persistence.saveBibliography(navigation.buildHtml(bibItems), navigation.buildJson(bibItems));
 
   // build pages
   const contents = persistence.loadContent(dirs.src.text);
   const templates = dot.process({ path: dirs.src.templates });
-  persistence.saveFolder(dirs.out.root)(content.build(contents, templates, meta, bib.buildJson(bibItems), bib.buildHtml(bibItems)));
+  persistence.saveFolder(dirs.out.root)(content.build(contents, templates, meta, navigation.buildJson(bibItems), navigation.buildHtml(bibItems)));
 
   writeMeta(`${args.out}/meta.json`)({ config, meta, args });
 

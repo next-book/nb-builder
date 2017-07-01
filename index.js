@@ -13,7 +13,7 @@ const scripts = require('./lib/scripts');
 const build = (args) => {
   const config = getConfig(args.src);
   const dirs = persistence.prepDirs(args.src, args.out, config.dirs);
-  const meta = Object.assign({}, { publication: config.about }, revision.build(dirs.src.root));
+  const meta = Object.assign({}, args, { publication: config.about }, revision.build(dirs.src.root));
 
   // build style
   style.build(dirs.src.style, `${dirs.out.root}/style`);

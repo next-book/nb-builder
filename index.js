@@ -27,11 +27,18 @@ const build = (args) => {
   // load bibliography
   const bibItems = navigation.load(dirs.src.bibliography, dirs.out.root);
   persistence.saveBibliography(navigation.buildHtml(bibItems), navigation.buildJson(bibItems));
+  
+  const indexItems = navigation.loadIndex(dirs.src.bibliography);
 
   // build pages
-  const contents = persistence.loadContent(dirs.src.text);
   const templates = dot.process({ path: dirs.src.templates });
-  persistence.saveFolder(dirs.out.root)(content.build(contents, templates, meta, navigation.buildJson(bibItems), navigation.buildHtml(bibItems)));
+  const contentSource = persistence.loadContent(dirs.src.text);
+  const contents = content.build(contentSource, templates, meta, navigation.buildJson(bibItems), navigation.buildHtml(bibItems), indexItems);
+  persistence.saveFolder(dirs.out.root)(contents);
+  
+  const defList = content.buildDefinitionsList(indexItems, contentSource.chapters, templates);
+  persistence.saveFolder(dirs.out.root)(defList);
+  
 
   writeMeta(`${args.out}/meta.json`)({ config, meta, args });
 

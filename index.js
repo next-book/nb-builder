@@ -6,7 +6,8 @@ const dot = require('dot');
 const persistence = require('./lib/persistence');
 const revision = require('./lib/revision');
 const content = require('./lib/content');
-const navigation = require('./lib/navigation');
+const dictionary = require('./lib/dictionary');
+const sources = require('./lib/sources');
 const style = require('./lib/style');
 const scripts = require('./lib/scripts');
 
@@ -25,19 +26,18 @@ const build = (args) => {
   persistence.copyFolder(dirs.src.assets)('assets');
 
   // load bibliography
-  const bibItems = navigation.load(dirs.src.bibliography, dirs.out.root);
-  persistence.saveBibliography(navigation.buildHtml(bibItems), navigation.buildJson(bibItems));
+  const bibItems = sources.load(dirs.src.bibliography, dirs.out.root);
+  persistence.saveBibliography(sources.buildHtml(bibItems), sources.buildJson(bibItems));
   
-  const indexItems = navigation.loadIndex(dirs.src.bibliography);
+  const dictionaryItems = sources.loadDictionary(dirs.src.dictionary);
 
   // build pages
   const templates = dot.process({ path: dirs.src.templates });
   const contentSource = persistence.loadContent(dirs.src.text);
-  const contents = content.build(contentSource, templates, meta, navigation.buildJson(bibItems), navigation.buildHtml(bibItems), indexItems);
+  const contents = content.build(contentSource, templates, meta, sources.buildJson(bibItems), sources.buildHtml(bibItems), dictionaryItems);
   persistence.saveFolder(dirs.out.root)(contents);
   
-  const defList = content.buildDefinitionsList(indexItems, contentSource.chapters, templates);
-  persistence.saveFolder(dirs.out.root)(defList);
+  persistence.saveFolder(dirs.out.root)(dictionary.buildDictionary(dictionaryItems, contentSource.chapters, templates));
   
 
   writeMeta(`${args.out}/meta.json`)({ config, meta, args });

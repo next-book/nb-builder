@@ -2,6 +2,7 @@ const fs = require('fs');
 
 const yaml = require('js-yaml');
 
+
 const persistence = require('./lib/persistence');
 const revision = require('./lib/revision');
 const content = require('./lib/content');
@@ -29,10 +30,10 @@ const build = (args) => {
   const templates = templating.build(dirs.src.templates, meta);
 
   // load bibliography
-  const bibItems = sources.load(dirs.src.bibliography, dirs.out.root);
-  persistence.saveBibliography(sources.buildHtml(bibItems), sources.buildJson(bibItems));
+  const bibItems = sources.build(dirs.src.bibliography)(config.lang, config.citationStyle, templates);
   
-  const dictionaryItems = sources.loadDictionary(dirs.src.dictionary);
+  // dictionary
+  const dictionaryItems = dictionary.load(dirs.src.dictionary);
 
   // build pages
   const contentSource = persistence.loadContent(dirs.src.text);

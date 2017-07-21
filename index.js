@@ -1,11 +1,11 @@
 const fs = require('fs');
 
 const yaml = require('js-yaml');
-const dot = require('dot');
 
 const persistence = require('./lib/persistence');
 const revision = require('./lib/revision');
 const content = require('./lib/content');
+const templating = require('./lib/templating');
 const dictionary = require('./lib/dictionary');
 const sources = require('./lib/sources');
 const style = require('./lib/style');
@@ -14,8 +14,8 @@ const scripts = require('./lib/scripts');
 const build = (args) => {
   const config = getConfig(args.src);
   const dirs = persistence.prepDirs(args.src, args.out, config.dirs);
-  const meta = Object.assign({}, args, { publication: config.about }, revision.build(dirs.src.root));
-
+  const meta = Object.assign({}, { args }, config.about, { revision: revision.build(dirs.src.root) });
+  
   // build style
   style.build(dirs.src.style, `${dirs.out.root}/style`);
 
@@ -24,6 +24,9 @@ const build = (args) => {
   
   // copy assets
   persistence.copyFolder(dirs.src.assets)('assets');
+  
+  // get templates
+  const templates = templating.build(dirs.src.templates, meta);
 
   // load bibliography
   const bibItems = sources.load(dirs.src.bibliography, dirs.out.root);
@@ -32,12 +35,11 @@ const build = (args) => {
   const dictionaryItems = sources.loadDictionary(dirs.src.dictionary);
 
   // build pages
-  const templates = dot.process({ path: dirs.src.templates });
   const contentSource = persistence.loadContent(dirs.src.text);
-  const contents = content.build(contentSource, templates, meta, sources.buildJson(bibItems), sources.buildHtml(bibItems), dictionaryItems);
+  const contents = content.build(contentSource, meta, templates, bibItems, dictionaryItems);
   persistence.saveFolder(dirs.out.root)(contents);
   
-  persistence.saveFolder(dirs.out.root)(dictionary.buildDictionary(dictionaryItems, contentSource.chapters, templates));
+  persistence.saveFolder(dirs.out.root)(dictionary.build(dictionaryItems, contentSource.chapters, templates));
   
 
   writeMeta(`${args.out}/meta.json`)({ config, meta, args });

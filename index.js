@@ -33,15 +33,15 @@ const build = (args) => {
   const bibItems = sources.build(dirs.src.bibliography)(config.lang, config.citationStyle, templates);
   
   // dictionary
-  const dictionaryItems = dictionary.load(dirs.src.dictionary);
+  const dictionaryTerms = dictionary.load(dirs.src.dictionary);
 
   // build pages
   const contentSource = persistence.loadContent(dirs.src.text);
-  const contents = content.build(contentSource, meta, templates, bibItems, dictionaryItems);
+  const contents = content.build(contentSource, meta, templates, bibItems, dictionaryTerms);
   persistence.saveFolder(dirs.out.root)(contents);
   
-  persistence.saveFolder(dirs.out.root)(dictionary.build(dictionaryItems, contentSource.chapters, templates));
-  
+  // build dictionary
+  persistence.saveFolder(dirs.out.root)(dictionary.build(dictionaryTerms, meta, contents, templates));
 
   writeMeta(`${args.out}/meta.json`)({ config, meta, args });
 

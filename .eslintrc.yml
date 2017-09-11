@@ -2,6 +2,7 @@ extends: airbnb-base
 plugins:
   - import
 rules:
+  no-cond-assing: off
   no-param-reassign: 
     - error
     - props: false
